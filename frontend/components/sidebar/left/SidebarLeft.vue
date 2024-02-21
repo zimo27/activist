@@ -14,7 +14,7 @@
       'w-16': sidebar.collapsed && sidebar.collapsedSwitch == true,
     }"
   >
-    <SidebarLeftHeader @toggle-pressed="setContentScrollable()" />
+    <SidebarLeftHeader @toggle-pressed="setContentScrollable()" :is-scrollReachBottom="contentScrollBottom"/>
     <div
       ref="content"
       class="h-full overflow-x-hidden"
@@ -294,15 +294,48 @@ const getFiltersByPageType = computed(() => {
 
 const content = ref();
 const contentScrollable = ref(false);
+const contentScrollTop= ref(false);
+const contentScrollBottom = ref(false);
 
 function setContentScrollable(): void {
   contentScrollable.value =
     content.value.scrollHeight > content.value.clientHeight ? true : false;
+  // if (contentScrollable.value == true) {
+  //   console.log("Scrollable");
+  // } else {
+  //   console.log("Not Scrollable");
+  // }
+}
+
+function checkScrollPosition() {
+  const element = content.value;
+  const atTop = element.scrollTop === 0;
+  const atBottom =  Math.round(element.scrollHeight - element.scrollTop) === element.clientHeight;
+  console.log(element.scrollHeight - element.scrollTop, element.clientHeight);
+  if (atTop) {
+    console.log("Scrollbar is at the top");
+    contentScrollTop.value = true;
+  } else {
+    contentScrollTop.value = false;
+  }
+
+  if (atBottom) {
+    console.log("Scrollbar is at the bottom");
+    contentScrollBottom.value = true;
+  } else {
+    contentScrollBottom.value = false;
+  }
 }
 
 onMounted(() => {
   window.addEventListener("resize", setContentScrollable);
   setContentScrollable();
+
+  // Add scroll event listener to the content element
+  content.value.addEventListener("scroll", checkScrollPosition);
+  // Initial check in case the scrollbar is already at the top or bottom
+  checkScrollPosition();
+
 });
 
 onUnmounted(() => {

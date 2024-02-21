@@ -1,6 +1,6 @@
 <template>
   <header
-    class="w-full pl-1 transition-all duration-500 bg-light-distinct dark:bg-dark-distinct"
+    class="w-full pl-1 transition-all duration-500 bg-light-distinct dark:bg-dark-distinct" :class="{'drop-shadow-md': isScrollReachBottom}"
   >
     <div class="flex items-center pt-3 pb-2 pl-[0.85rem] pr-6">
       <div
@@ -63,6 +63,17 @@
 <script setup lang="ts">
 const sidebar = useSidebar();
 const emit = defineEmits(["toggle-pressed"]);
+</script>
+
+<script lang="ts">
+export default {
+  props: {
+    isScrollReachBottom: {
+      type: Boolean,
+      default: false, // Provide a default value if it's optional
+    },
+  },
+};
 </script>
 
 <style>
